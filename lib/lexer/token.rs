@@ -1,12 +1,13 @@
 
 
+#[derive(Debug, Eq, PartialEq)]
 pub enum Token {
     Illegal,
     EOF,
 
     // Identifiers + literals
     Ident(String), // add, foobar, x, y, ...
-    IntLiteral(i64),
+    IntLiteral(isize),
 
     // Operators
     Assign,
@@ -24,4 +25,21 @@ pub enum Token {
     // Keywords
     Function,
     Let,
+}
+
+
+impl Token {
+    pub fn new(c: &char) -> Self {
+        match &c {
+            '=' => Token::Assign,
+            '+' => Token::Plus,
+            ',' => Token::Comma,
+            ';' => Token::Semicolon,
+            '(' => Token::LParen,
+            ')' => Token::RParen,
+            '{' => Token::LBrace,
+            '}' => Token::RBrace,
+            _   => Token::Illegal,
+        }
+    }
 }
