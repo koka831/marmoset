@@ -7,6 +7,7 @@ pub struct Lexer {
     input: Vec<char>,
     pos: usize, // current position in input (points to current char)
     read_pos: usize, // current reading position (after current char)
+    chr: char,
 }
 
 impl Lexer {
@@ -15,6 +16,7 @@ impl Lexer {
             input: s.chars().collect::<Vec<char>>(),
             pos: 0,
             read_pos: 0,
+            chr: '0'
         }
     }
 
@@ -22,5 +24,16 @@ impl Lexer {
         let tok = Token::new(&self.input[self.pos]);
         self.pos += 1;
         tok
+    }
+
+    fn read_char(&mut self) {
+        // check if it reached the end of input.
+        if self.read_pos >= self.input.len() {
+            self.chr = '0';
+        } else {
+            self.chr = self.input[self.read_pos];
+        }
+        self.pos = self.read_pos;
+        self.read_pos += 1;
     }
 }
