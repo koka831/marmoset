@@ -10,6 +10,14 @@ pub struct Lexer {
     chr: Option<char>,
 }
 
+pub fn is_letter(c: char) -> bool {
+    'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_'
+}
+
+pub fn is_digit(c: char) -> bool {
+    '0' <= c && c <= '9'
+}
+
 impl Lexer {
     pub fn new(s: String) -> Self {
         Lexer {
@@ -22,8 +30,17 @@ impl Lexer {
 
     pub fn next_token(&mut self) -> Token {
         let chr = self.read_char();
-        let tok = Token::new(&chr);
-        tok
+        if let Some(c) = chr {
+            if is_letter(c) { // ident or literal
+                return Token::from_str(self.read_ident());
+            } else if is_digit(c) {
+                return Token::IntLiteral(self.read_number());
+            } else { // reserved word
+                Token::new(&c)
+            }
+        } else { // None
+            Token::EOF
+        }
     }
 
     fn read_char(&mut self) -> Option<char> {
@@ -36,5 +53,25 @@ impl Lexer {
         self.pos = self.read_pos;
         self.read_pos += 1;
         self.chr
+    }
+
+    fn read_ident(&mut self) -> String {
+        let mut buf = String::new();
+        while let Some(c) = self.chr {
+            if !is_letter(c) { break; }
+            buf += c.to_string().as_str();
+            let _ = self.read_char();
+        }
+        buf
+    }
+
+    fn read_number(&mut self) -> usize {
+        let mut buf = String::new();
+        while let Some(c) = self.chr {
+            if !is_digit(c) { break; }
+            buf += c.to_string().as_str();
+            let _ = self.read_char();
+        }
+        buf.parse().unwrap()
     }
 }
