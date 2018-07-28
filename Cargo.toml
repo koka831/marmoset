@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["koka <koka.code@gmail.com>"]
 
 [lib]
-name = "marmoset_lib"
+name = "marmoset"
 path = "lib/mod.rs"
 
 [dependencies]
