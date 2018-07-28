@@ -10,22 +10,27 @@ pub enum Token {
     IntLiteral(usize),
 
     // Operators
-    Assign,
-    Plus,
+    Assign,     // =
+    Plus,       // +
+    Minus,      // -
+    Bang,       // !
+    Asterisk,   // *
+    Slash,      // /
+    LT,         // <
+    GT,         // >
 
     // Delimiters
-    Comma,
-    Semicolon,
+    Comma,      // ,
+    Semicolon,  // ;
 
-    LParen, // (
-    RParen, // )
-    LBrace, // {
-    RBrace, // }
-    Space,
+    LParen,     // (
+    RParen,     // )
+    LBrace,     // {
+    RBrace,     // }
 
     // Keywords
-    Function,
-    Let,
+    Function,   // fn
+    Let,        // let
 }
 
 
@@ -34,13 +39,18 @@ impl Token {
         match &c {
             '=' => Token::Assign,
             '+' => Token::Plus,
+            '-' => Token::Minus,
+            '!' => Token::Bang,
+            '*' => Token::Asterisk,
+            '/' => Token::Slash,
+            '<' => Token::LT,
+            '>' => Token::GT,
             ',' => Token::Comma,
             ';' => Token::Semicolon,
             '(' => Token::LParen,
             ')' => Token::RParen,
             '{' => Token::LBrace,
             '}' => Token::RBrace,
-            ' ' => Token::Space,
             _   => Token::Illegal(*c),
         }
     }
