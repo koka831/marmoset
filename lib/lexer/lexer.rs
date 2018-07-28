@@ -6,7 +6,6 @@ use lexer::token::Token;
 pub struct Lexer {
     input: Vec<char>,
     pos: usize, // current position in input (points to current char)
-    read_pos: usize, // current reading position (after current char)
     chr: Option<char>,
 }
 
@@ -20,57 +19,68 @@ pub fn is_digit(c: char) -> bool {
 
 impl Lexer {
     pub fn new(s: String) -> Self {
+        let input = s.chars().collect::<Vec<char>>();
         Lexer {
-            input: s.chars().collect::<Vec<char>>(),
+            input: input,
             pos: 0,
-            read_pos: 0,
             chr: None,
         }
     }
 
-    pub fn next_token(&mut self) -> Token {
-        let chr = self.read_char();
-        if let Some(c) = chr {
-            if is_letter(c) { // ident or literal
-                return Token::from_str(self.read_ident());
-            } else if is_digit(c) {
-                return Token::IntLiteral(self.read_number());
-            } else { // reserved word
-                Token::new(&c)
+    fn skip_whitespace(&mut self) {
+        if let Some(t) = self.check_next() {
+            if t.is_whitespace() {
+                self.read_char();
+                self.skip_whitespace();
             }
+        }
+    }
+
+    pub fn next_token(&mut self) -> Token {
+        self.skip_whitespace();
+        let chr = self.check_next();
+        if let Some(_) = chr {
+            let c = self.read_char();
+            let tok = match c {
+                c if is_letter(c) => Token::from_str(self.read_ident()),
+                c if is_digit(c)  => Token::IntLiteral(self.read_number()),
+                _ => Token::new(&c),
+            };
+            tok
         } else { // None
             Token::EOF
         }
     }
 
-    fn read_char(&mut self) -> Option<char> {
-        // check if it reached the end of input.
-        if self.read_pos >= self.input.len() {
-            self.chr = None;
+    /// check if next char is valid
+    fn check_next(&self) -> Option<char> {
+        if self.pos >= self.input.len() {
+            None
         } else {
-            self.chr = Some(self.input[self.read_pos]);
+            Some(self.input[self.pos])
         }
-        self.pos = self.read_pos;
-        self.read_pos += 1;
-        self.chr
+    }
+
+    fn read_char(&mut self) -> char {
+        self.chr = self.check_next();
+        self.pos += 1;
+        self.input[self.pos - 1]
     }
 
     fn read_ident(&mut self) -> String {
-        let mut buf = String::new();
-        while let Some(c) = self.chr {
+        let mut buf = self.chr.unwrap().to_string();
+        while let Some(c) = self.check_next() {
             if !is_letter(c) { break; }
-            buf += c.to_string().as_str();
-            let _ = self.read_char();
+            buf += self.read_char().to_string().as_str();
         }
         buf
     }
 
     fn read_number(&mut self) -> usize {
-        let mut buf = String::new();
-        while let Some(c) = self.chr {
+        let mut buf = self.chr.unwrap().to_string();
+        while let Some(c) = self.check_next() {
             if !is_digit(c) { break; }
-            buf += c.to_string().as_str();
-            let _ = self.read_char();
+            buf += self.read_char().to_string().as_str();
         }
         buf.parse().unwrap()
     }

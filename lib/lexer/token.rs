@@ -2,7 +2,7 @@
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum Token {
-    Illegal,
+    Illegal(char),
     EOF,
 
     // Identifiers + literals
@@ -41,7 +41,7 @@ impl Token {
             '{' => Token::LBrace,
             '}' => Token::RBrace,
             ' ' => Token::Space,
-            _   => Token::Illegal,
+            _   => Token::Illegal(*c),
         }
     }
 

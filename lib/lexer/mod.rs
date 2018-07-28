@@ -44,7 +44,21 @@ mod tests {
 
     #[test]
     fn test_integer_literal() {
-        let input = String::from("let five = 5;");
+        let input = String::from("let five=5;");
+        let expected = vec![
+            Token::Let,
+            Token::Ident("five".to_owned()),
+            Token::Assign,
+            Token::IntLiteral(5),
+            Token::Semicolon,
+            Token::EOF,
+        ];
+        run(input, &expected);
+    }
+
+    #[test]
+    fn test_missing_semicolon() {
+        let input = String::from("let five=5");
         let expected = vec![
             Token::Let,
             Token::Ident("five".to_owned()),
