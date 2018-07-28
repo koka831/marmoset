@@ -1,7 +1,6 @@
 use lexer::token::Token;
 
 
-
 #[derive(Debug)]
 pub struct Lexer {
     input: Vec<char>,
@@ -28,7 +27,7 @@ impl Lexer {
     }
 
     fn skip_whitespace(&mut self) {
-        if let Some(t) = self.check_next() {
+        if let Some(t) = self.peek_next() {
             if t.is_whitespace() {
                 self.read_char();
                 self.skip_whitespace();
@@ -38,12 +37,28 @@ impl Lexer {
 
     pub fn next_token(&mut self) -> Token {
         self.skip_whitespace();
-        let chr = self.check_next();
+        let chr = self.peek_next();
         if let Some(_) = chr {
             let c = self.read_char();
             let tok = match c {
                 c if is_letter(c) => Token::from_str(self.read_ident()),
                 c if is_digit(c)  => Token::IntLiteral(self.read_number()),
+                '=' => { 
+                    let mut tok = Token::Assign;
+                    if self.peek_next_is('=') {
+                        tok = Token::Equal;
+                        self.read_char();
+                    }
+                    tok
+                },
+                '!' => {
+                    let mut tok = Token::Bang;
+                    if self.peek_next_is('=') {
+                        tok = Token::NEq;
+                        self.read_char();
+                    }
+                    tok
+                }
                 _ => Token::new(&c),
             };
             tok
@@ -53,7 +68,7 @@ impl Lexer {
     }
 
     /// check if next char is valid
-    fn check_next(&self) -> Option<char> {
+    fn peek_next(&self) -> Option<char> {
         if self.pos >= self.input.len() {
             None
         } else {
@@ -61,15 +76,21 @@ impl Lexer {
         }
     }
 
+    fn peek_next_is(&self, c: char) -> bool {
+        if let Some(a) = self.peek_next() {
+            if a == c { true } else { false }
+        } else { false }
+    }
+
     fn read_char(&mut self) -> char {
-        self.chr = self.check_next();
+        self.chr = self.peek_next();
         self.pos += 1;
         self.input[self.pos - 1]
     }
 
     fn read_ident(&mut self) -> String {
         let mut buf = self.chr.unwrap().to_string();
-        while let Some(c) = self.check_next() {
+        while let Some(c) = self.peek_next() {
             if !is_letter(c) { break; }
             buf += self.read_char().to_string().as_str();
         }
@@ -78,7 +99,7 @@ impl Lexer {
 
     fn read_number(&mut self) -> usize {
         let mut buf = self.chr.unwrap().to_string();
-        while let Some(c) = self.check_next() {
+        while let Some(c) = self.peek_next() {
             if !is_digit(c) { break; }
             buf += self.read_char().to_string().as_str();
         }

@@ -31,6 +31,13 @@ pub enum Token {
     // Keywords
     Function,   // fn
     Let,        // let
+    True,       // true
+    False,      // false
+    If,         // if
+    Else,       // else
+    Return,     // return
+    Equal,      // ==
+    NEq,        // !=
 }
 
 
@@ -59,6 +66,14 @@ impl Token {
         match &*s {
             "let" => Token::Let,
             "fn"  => Token::Function,
+            "true" => Token::True,
+            "false" => Token::False,
+            "if" => Token::If,
+            "else" => Token::Else,
+            "return" => Token::Return,
+            "=" => Token::Assign,
+            "==" => Token::Equal,
+            "=!" => Token::NEq,
             _ => Token::Ident(s),
         }
     }
