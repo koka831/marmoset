@@ -38,7 +38,7 @@ impl Lexer {
     pub fn next_token(&mut self) -> Token {
         self.skip_whitespace();
         if let Some(_) = self.peek_next() {
-            let tok = match self.read_char() {
+            match self.read_char() {
                 c if is_letter(c) => Token::from_str(self.read_ident()),
                 c if is_digit(c)  => Token::IntLiteral(self.read_number()),
                 c @ '='| c @ '!' => {
@@ -48,8 +48,7 @@ impl Lexer {
                     } else { Token::Assign }
                 },
                 c @ _ => Token::new(&c),
-            };
-            tok
+            }
         } else { // None
             Token::EOF
         }
