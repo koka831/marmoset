@@ -20,4 +20,5 @@ pub struct Ident(pub String);
 pub enum Literal {
     StringLiteral(String),
     IntLiteral(usize),
+    BooleanLiteral(bool),
 }

@@ -94,6 +94,8 @@ impl Parser {
             Token::Ident(s) => Ok(Expr::IdentExpr(Ident(s.clone()))),
             Token::IntLiteral(n) => Ok(Expr::LiteralExpr(Literal::IntLiteral(*n))),
             Token::StringLiteral(s) => Ok(Expr::LiteralExpr(Literal::StringLiteral(s.clone()))),
+            Token::True => Ok(Expr::LiteralExpr(Literal::BooleanLiteral(true))),
+            Token::False => Ok(Expr::LiteralExpr(Literal::BooleanLiteral(false))),
             _ => Err(ParseError::IllegalExpr),
         }
     }
