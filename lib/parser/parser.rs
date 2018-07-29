@@ -40,6 +40,7 @@ impl Parser {
     fn parse_stmt(&mut self) -> Result<()> {
         let stmt = match self.cur {
             Token::Let => self.parse_let_statement()?,
+            Token::Return => self.parse_return_statement()?,
             _ => {
                 println!("uncaught token: {:?}", self.cur);
                 println!("current: {:?}", self.program);
@@ -67,6 +68,18 @@ impl Parser {
         }
         self.next_token();
         Ok(Statement::LetStatement(ident, expr))
+    }
+
+    /// return <expr> Token::Semicolon
+    fn parse_return_statement(&mut self) -> Result<Statement> {
+        self.next_token();
+        let expr = self.parse_expr()?;
+        self.next_token();
+        if self.cur != Token::Semicolon {
+            return Err(ParseError::MissingSemicolon);
+        }
+        self.next_token();
+        Ok(Statement::ReturnStatement(expr))
     }
 
     fn parse_ident(&mut self) -> Result<Ident> {

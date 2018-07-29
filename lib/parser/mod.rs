@@ -89,4 +89,25 @@ mod tests {
         }
     }
 
+    #[test]
+    fn test_return_statement() {
+        let input = "return 5;".to_string();
+        let expected = vec![
+            Statement::ReturnStatement(
+                Expr::LiteralExpr(Literal::IntLiteral(5)),
+            ),
+        ];
+        run(input, expected);
+    }
+
+    #[test]
+    fn test_return_statement_with_missing_semicolon() {
+        let input = "return x".to_string();
+        let l = Lexer::new(input);
+        let mut p = Parser::new(l);
+        match p.parse() {
+            Err(ParseError::MissingSemicolon) => assert!(true),
+            _ => assert!(false),
+        }
+    }
 }

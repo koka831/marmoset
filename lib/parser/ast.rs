@@ -3,6 +3,7 @@
 #[derive(Debug, PartialEq, Clone)]
 pub enum Statement {
     LetStatement(Ident, Expr),
+    ReturnStatement(Expr),
 }
 
 #[derive(Debug, PartialEq, Clone)]
