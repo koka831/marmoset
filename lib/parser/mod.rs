@@ -8,6 +8,16 @@ mod tests {
     use super::parser::{ Parser, ParseError };
     use super::ast::{ Statement, Expr, Literal, Ident };
 
+    fn run(input: String, expect: Vec<Statement>) {
+        let l = Lexer::new(input);
+        let mut p = Parser::new(l);
+        match p.parse() {
+            Ok(_) => assert!(true),
+            _ => assert!(false),
+        }
+        assert_eq!(p.program, expect);
+    }
+
     #[test]
     fn test_let_statements() {
         let input = r#"
@@ -19,13 +29,31 @@ mod tests {
                 Expr::LiteralExpr(Literal::IntLiteral(5)),
             ),
         ];
-        let l = Lexer::new(input);
-        let mut p = Parser::new(l);
-        match p.parse() {
-            Ok(_) => assert!(true),
-            Err(_) => assert!(false, ""),
-        }
-        assert_eq!(p.program, expect);
+        run(input, expect);
+    }
+
+    #[test]
+    fn test_string_literal() {
+        let input = r#"let bar = "Hello, World";"#.to_string();
+        let expect = vec![
+            Statement::LetStatement(
+                Ident("bar".into()),
+                Expr::LiteralExpr(Literal::StringLiteral("Hello, World".into())),
+            ),
+        ];
+        run(input, expect);
+    }
+
+    #[test]
+    fn test_let_statements_with_ident() {
+        let input = r#"let foo = bar;"#.to_string();
+        let expect = vec![
+            Statement::LetStatement(
+                Ident("foo".into()),
+                Expr::IdentExpr(Ident("bar".into())),
+            ),
+        ];
+        run(input, expect);
     }
 
     #[test]
@@ -34,9 +62,8 @@ mod tests {
         let l = Lexer::new(input);
         let mut p = Parser::new(l);
         match p.parse() {
-            Ok(_) => assert!(false),
             Err(ParseError::MissingSemicolon) => assert!(true),
-            Err(_) => assert!(false),
+            _ => assert!(false),
         }
     }
 
@@ -46,9 +73,8 @@ mod tests {
         let l = Lexer::new(input);
         let mut p = Parser::new(l);
         match p.parse() {
-            Ok(_) => assert!(false),
             Err(ParseError::IllegalExpr) => assert!(true),
-            Err(_) => assert!(false),
+            _ => assert!(false),
         }
     }
 
@@ -58,9 +84,8 @@ mod tests {
         let l = Lexer::new(input);
         let mut p = Parser::new(l);
         match p.parse() {
-            Ok(_) => assert!(false),
             Err(ParseError::IllegalIdent) => assert!(true),
-            Err(_) => assert!(false),
+            _ => assert!(false),
         }
     }
 
