@@ -46,7 +46,7 @@ impl Lexer {
                     if self.peek_next_is('=') {
                         self.read_char();
                         Token::from_str(c.to_string() + "=")
-                    } else { Token::Assign }
+                    } else { Token::new(&c) }
                 },
                 c @ _ => Token::new(&c),
             }

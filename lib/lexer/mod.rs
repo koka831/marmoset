@@ -40,6 +40,15 @@ mod tests {
     }
 
     #[test]
+    fn test_math_token() {
+        let input = r#"=+-!*/"#.to_string();
+        let expected = vec![
+            Assign, Plus, Minus, Bang, Asterisk, Slash,
+        ];
+        run(input, &expected);
+    }
+
+    #[test]
     fn test_next_token() {
         let input = r#"
         let x = 5;
@@ -48,7 +57,6 @@ mod tests {
             x + y
         };
         let result = add(x, y);
-
         if (x < y) {
             return true;
         } else if (x == y){
