@@ -73,7 +73,7 @@ impl Token {
             "return" => Token::Return,
             "=" => Token::Assign,
             "==" => Token::Equal,
-            "=!" => Token::NEq,
+            "!=" => Token::NEq,
             _ => Token::Ident(s),
         }
     }

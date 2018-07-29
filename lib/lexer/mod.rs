@@ -38,8 +38,10 @@ mod tests {
 
         if (x < y) {
             return true;
-        } else {
+        } else if (x == y){
             return false;
+        } else if (x > y) {
+            return x;
         }
         "#.to_string();
         let expected = vec![
@@ -57,8 +59,10 @@ mod tests {
             If, LParen, Ident("x".into()), LT, Ident("y".into()), RParen,
             LBrace,
                 Return, True, Semicolon,
-            RBrace, Else, LBrace,
+            RBrace, Else, If, LParen, Ident("x".into()), Equal, Ident("y".into()), RParen, LBrace,
                 Return, False, Semicolon,
+            RBrace, Else, If, LParen, Ident("x".into()), GT, Ident("y".into()), RParen, LBrace,
+                Return, Ident("x".into()), Semicolon,
             RBrace,
             EOF,
         ];

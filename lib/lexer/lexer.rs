@@ -43,22 +43,14 @@ impl Lexer {
             let tok = match c {
                 c if is_letter(c) => Token::from_str(self.read_ident()),
                 c if is_digit(c)  => Token::IntLiteral(self.read_number()),
-                '=' => { 
+                c @ '='| c @ '!' => {
                     let mut tok = Token::Assign;
                     if self.peek_next_is('=') {
-                        tok = Token::Equal;
+                        tok = Token::from_str(c.to_string() + "=");
                         self.read_char();
                     }
                     tok
                 },
-                '!' => {
-                    let mut tok = Token::Bang;
-                    if self.peek_next_is('=') {
-                        tok = Token::NEq;
-                        self.read_char();
-                    }
-                    tok
-                }
                 _ => Token::new(&c),
             };
             tok
