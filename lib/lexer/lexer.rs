@@ -48,6 +48,18 @@ impl Lexer {
                         Token::from_str(c.to_string() + "=")
                     } else { Token::new(&c) }
                 },
+                '+' => {
+                    if self.peek_next_is('+') {
+                        self.read_char();
+                        Token::Increment
+                    } else { Token::Plus }
+                },
+                '-' => {
+                    if self.peek_next_is('-') {
+                        self.read_char();
+                        Token::Decrement
+                    } else { Token::Minus }
+                },
                 c @ _ => Token::new(&c),
             }
         } else { // None

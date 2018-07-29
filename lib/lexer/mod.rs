@@ -49,6 +49,13 @@ mod tests {
     }
 
     #[test]
+    fn test_incr_decr() {
+        let input = "++--".to_string();
+        let expected = vec![ Increment, Decrement ];
+        run(input, &expected);
+    }
+
+    #[test]
     fn test_next_token() {
         let input = r#"
         let x = 5;

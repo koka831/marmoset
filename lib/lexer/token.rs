@@ -19,6 +19,8 @@ pub enum Token {
     Slash,      // /
     LT,         // <
     GT,         // >
+    Increment,  // ++
+    Decrement,  // --
 
     // Delimiters
     Comma,      // ,
@@ -75,6 +77,8 @@ impl Token {
             "=" => Token::Assign,
             "==" => Token::Equal,
             "!=" => Token::NEq,
+            "++" => Token::Increment,
+            "--" => Token::Decrement,
             _ => Token::Ident(s),
         }
     }
