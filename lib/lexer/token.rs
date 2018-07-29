@@ -8,6 +8,7 @@ pub enum Token {
     // Identifiers + literals
     Ident(String), // add, foobar, x, y, ...
     IntLiteral(usize),
+    StringLiteral(String),
 
     // Operators
     Assign,     // =
