@@ -27,6 +27,19 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_string() {
+        let input = r#"
+        let str = "Hello, World";
+        "#.to_string();
+        let expected = vec![
+            Let, Ident("str".into()), Assign,
+            StringLiteral("Hello, World".into()), Semicolon,
+            EOF,
+        ];
+        run(input, &expected);
+    }
+
+    #[test]
     fn test_next_token() {
         let input = r#"
         let x = 5;

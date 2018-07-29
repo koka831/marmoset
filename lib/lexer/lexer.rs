@@ -41,6 +41,7 @@ impl Lexer {
             match self.read_char() {
                 c if is_letter(c) => Token::from_str(self.read_ident()),
                 c if is_digit(c)  => Token::IntLiteral(self.read_number()),
+                '\"' => Token::StringLiteral(self.read_string()),
                 c @ '='| c @ '!' => {
                     if self.peek_next_is('=') {
                         self.read_char();
@@ -73,6 +74,15 @@ impl Lexer {
         self.chr = self.peek_next();
         self.pos += 1;
         self.input[self.pos - 1]
+    }
+
+    fn read_string(&mut self) -> String {
+        let mut buf = self.read_char().to_string();
+        while self.peek_next() != Some('\"') {
+            buf += self.read_char().to_string().as_str();
+        }
+        self.read_char();
+        buf
     }
 
     fn read_ident(&mut self) -> String {
