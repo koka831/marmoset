@@ -6,7 +6,7 @@ pub mod parser;
 mod tests {
     use super::super::lexer::lexer::Lexer;
     use super::parser::{ Parser, ParseError };
-    use super::ast::{ Statement, Expr, Literal, Ident };
+    use super::ast::{ Statement, Expr, Literal, Ident, Infix };
 
     fn run(input: String, expect: Vec<Statement>) {
         let l = Lexer::new(input);
@@ -109,5 +109,21 @@ mod tests {
             Err(ParseError::MissingSemicolon) => assert!(true),
             _ => assert!(false),
         }
+    }
+
+    #[test]
+    fn test_infix_expression() {
+        let input = "let x = a + b;".to_string();
+        let expect = vec![
+            Statement::LetStatement(
+                Ident("x".into()),
+                Expr::InfixExpr(
+                    Infix::Plus,
+                    Box::new(Expr::IdentExpr(Ident("a".into()))),
+                    Box::new(Expr::IdentExpr(Ident("b".into())))
+                ),
+            )
+        ];
+        run(input, expect);
     }
 }
