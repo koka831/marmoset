@@ -113,7 +113,12 @@ mod tests {
 
     #[test]
     fn test_infix_expression() {
-        let input = "let x = a + b;".to_string();
+        let input = r#"
+            let x = a + b;
+            let y = a - b;
+            let z = a * b;
+            let w = a / b;
+        "#.to_string();
         let expect = vec![
             Statement::LetStatement(
                 Ident("x".into()),
@@ -122,7 +127,31 @@ mod tests {
                     Box::new(Expr::IdentExpr(Ident("a".into()))),
                     Box::new(Expr::IdentExpr(Ident("b".into())))
                 ),
-            )
+            ),
+            Statement::LetStatement(
+                Ident("y".into()),
+                Expr::InfixExpr(
+                    Infix::Minus,
+                    Box::new(Expr::IdentExpr(Ident("a".into()))),
+                    Box::new(Expr::IdentExpr(Ident("b".into())))
+                ),
+            ),
+            Statement::LetStatement(
+                Ident("z".into()),
+                Expr::InfixExpr(
+                    Infix::Mul,
+                    Box::new(Expr::IdentExpr(Ident("a".into()))),
+                    Box::new(Expr::IdentExpr(Ident("b".into())))
+                ),
+            ),
+            Statement::LetStatement(
+                Ident("w".into()),
+                Expr::InfixExpr(
+                    Infix::Divide,
+                    Box::new(Expr::IdentExpr(Ident("a".into()))),
+                    Box::new(Expr::IdentExpr(Ident("b".into())))
+                ),
+            ),
         ];
         run(input, expect);
     }
